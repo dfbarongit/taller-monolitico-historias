@@ -34,6 +34,7 @@ class HistoriasDB implements HistoriasDBInterface{
 
     public function query(string $sql): bool
     {
+        echo $sql;
         $result = $this->conex->query($sql);
         $this->conex->close();
         return $result;
