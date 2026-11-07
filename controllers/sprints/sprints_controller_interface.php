@@ -9,6 +9,7 @@ interface SprintsControllerInterface
     public function save_sprint(array $request): bool;
     public function delete_sprint(int $id): bool;
     public function get_sprint(int $id): Sprint;
+    public function update_sprint(array $request): bool;
 }
 
 ?>

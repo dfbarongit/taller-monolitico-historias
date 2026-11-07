@@ -25,5 +25,9 @@ class SprintsController implements SprintsControllerInterface {
     public function get_sprint(int $id): Sprint{
         return $this->sprint_model->get_sprint_by_id($id);
     }
+    public function update_sprint(array $request): bool{
+        $sprint = SprintMappersController::to_entity($request);
+        return $this->sprint_model->update_sprint($sprint);
+    }
 }
 ?>

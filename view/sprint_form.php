@@ -18,6 +18,12 @@ $titulo = "Crear un nuevo sprint";
 $nombreSpr = "";
 $fechaIniSpr = "";
 $fechaFinSpr = "";
+$textBtn = "Crear nuevo sprint";
+$action = "operaciones/sprint/registrar_sprint.php";
+
+if (!empty($_GET["sinReg"])) {
+    $titulo .= "<br> No hay registros, inicie creando un nuevo sprint...";
+}
 
 if (!empty($id)) {
     $controller = ControllersConfig::get_sprints_controller();
@@ -27,6 +33,8 @@ if (!empty($id)) {
     $nombreSpr = $sprint->getNombre();
     $fechaIniSpr = $sprint->getFechaInicio();
     $fechaFinSpr = $sprint->getFechaFin();
+    $textBtn = "Guardar cambios";
+    $action = "operaciones/sprint/actualizar_sprint.php";
 }
 ?>
 <!DOCTYPE html>
@@ -40,7 +48,7 @@ if (!empty($id)) {
 
 <body>
     <h1><?php echo $titulo?></h1>
-    <form action="operaciones/registrar_sprint.php" method="post">
+    <form action="<?php echo $action?>" method="post">
         <div>
             <input type="text" name="id" id="" value="<?php echo $id?>" hidden>
         </div>
@@ -55,7 +63,8 @@ if (!empty($id)) {
             <input type="date" name="fecha_fin" id="" value="<?php echo $fechaFinSpr?>">
         </div>
         <div>
-            <button type="submit">Crear nuevo sprint</button>
+            <a href="inicio.php">Cancelar</a>
+            <button type="submit"><?php echo $textBtn?></button>
         </div>
     </form>
 </body>

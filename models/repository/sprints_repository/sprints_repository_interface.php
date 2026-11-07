@@ -7,5 +7,6 @@ interface SprintsRepositoryInterface
     public function save_new_sprint(Sprint $sprint): bool;
     public function delete_sprint(int $id): bool;
     public function get_sprint_by_id(int $id): Sprint;
+    public function update_sprint(Sprint $sprint): bool;
 }
 ?>

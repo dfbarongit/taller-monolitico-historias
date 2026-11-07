@@ -23,6 +23,7 @@ class SprintsRepository implements SprintsRepositoryInterface
         // }
         // return $users;
         return array_map(
+            
             fn($row): Sprint => SprintMappers::to_entity($row),
             $users_db
         );
@@ -46,6 +47,12 @@ class SprintsRepository implements SprintsRepositoryInterface
             throw new Exception("Usuario no encontrado", 2);
         }
         return SprintMappers::to_entity($sprints[0]);
+    }
+    public function update_sprint(Sprint $sprint): bool
+    {
+        $sql = 'UPDATE `sprints` ';
+        $sql .= 'SET `nombre`="'.$sprint->getNombre().'",`fecha_inicio`="'.$sprint->getFechaInicio().'",`fecha_fin`="'.$sprint->getFechaFin().'" WHERE id = '.$sprint->getId();
+        return $this->historias_db->query($sql);
     }
 }
 ?>
