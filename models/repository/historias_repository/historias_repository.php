@@ -14,18 +14,19 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         $this->historias_db = $historias_db;
     }
 
-    public function get_historias(): array {
-        $sql = "select id, titulo, descripcion, responsable, estado, puntos, fecha_creacion, fecha_finalizacion, sprint_id, created_at, updated_at from historias";
-        $result = $this->historias_db->query($sql);
+     public function get_historias(): array 
+    {
+        $sql = "SELECT id, titulo, descripcion, responsable, estado, puntos, fecha_creacion, fecha_finalizacion, sprint_id, created_at, updated_at FROM historias";
+        $historias_db = $this->historias_db->query_select($sql);
     
-        $historias = [];
-        while ($row = $result->fetch_assoc()) {
-            $historias[] = HistoriaMapper::map($row); 
-        }
-        return $historias;
+        return array_map(
+            fn($row): Historia => HistoriaMapper::map($row),
+            $historias_db
+        );
     }
     
-    public function save_new_history(Historia $historia): bool {
+    public function save_new_history(Historia $historia): bool 
+    {
         $sql = "INSERT INTO `historias` (`titulo`, `descripcion`, `responsable`, `estado`, `puntos`, `fecha_creacion`, `fecha_finalizacion`, `sprint_id`) VALUES (";
         $sql .= "'" . $historia->getTitulo() . "', ";
         $sql .= "'" . $historia->getDescripcion() . "', ";
@@ -40,63 +41,55 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         return $this->historias_db->query($sql);
     }
 
-    public function update_historia(Historia $historia): bool {
-        $sql = "update historias set ";
-        $sql .= " titulo='" . $historia->getTitulo() . "', ";
-        $sql .= " descripcion='" . $historia->getDescripcion() . "', ";
-        $sql .= " responsable='" . $historia->getResponsable() . "', ";
-        $sql .= " estado='" . $historia->getEstado() . "', ";
-        $sql .= " puntos=" . $historia->getPuntos() . ", ";
-        $sql .= " fecha_creacion='" . $historia->getFechaCreacion()->format('Y-m-d H:i:s') . "', ";
+    public function update_historia(Historia $historia): bool 
+    {
+        $sql = "UPDATE historias SET ";
+        $sql .= "titulo='" . $historia->getTitulo() . "', ";
+        $sql .= "descripcion='" . $historia->getDescripcion() . "', ";
+        $sql .= "responsable='" . $historia->getResponsable() . "', ";
+        $sql .= "estado='" . $historia->getEstado() . "', ";
+        $sql .= "puntos=" . $historia->getPuntos() . ", ";
+        $sql .= "fecha_creacion='" . $historia->getFechaCreacion()->format('Y-m-d H:i:s') . "', ";
         
         if ($historia->getFechaFinalizacion() !== null) {
-            $sql .= " fecha_finalizacion='" . $historia->getFechaFinalizacion()->format('Y-m-d H:i:s') . "', ";
+            $sql .= "fecha_finalizacion='" . $historia->getFechaFinalizacion()->format('Y-m-d H:i:s') . "', ";
         } else {
-            $sql .= " fecha_finalizacion=NULL, ";
+            $sql .= "fecha_finalizacion=NULL, ";
         }
         
-        $sql .= " sprint_id=" . ($historia->getSprintId() ?: "NULL");
-        $sql .= " where id=" . $historia->getId();
+        $sql .= "sprint_id=" . ($historia->getSprintId() ?: "NULL");
+        $sql .= " WHERE id=" . $historia->getId();
         
         return $this->historias_db->query($sql);
     }
 
-    public function delete_historia(int $id): bool {
-        $sql = "delete from historias where id=" . $id;
+    public function delete_historia(int $id): bool 
+    {
+        $sql = "DELETE FROM historias WHERE id=" . $id;
         return $this->historias_db->query($sql);
     }
 
-    public function get_historias_by_sprint(int $sprintId): array {
-        $sql = "select id, titulo, descripcion, responsable, estado, puntos, fecha_creacion, fecha_finalizacion, sprint_id, created_at, updated_at from historias where sprint_id=" . $sprintId;
-        $result = $this->historias_db->query($sql);
+    public function get_historias_by_sprint(int $sprintId): array 
+    {
+        $sql = "SELECT id, titulo, descripcion, responsable, estado, puntos, fecha_creacion, fecha_finalizacion, sprint_id, created_at, updated_at FROM historias WHERE sprint_id=" . $sprintId;
+        $historias_db = $this->historias_db->query_select($sql);
         
-        $historias = [];
-        while ($row = $result->fetch_assoc()) {
-            $historias[] = HistoriaMapper::map($row);
-        }
-        return $historias;
+        return array_map(
+            fn($row): Historia => HistoriaMapper::map($row),
+            $historias_db
+        );
     }
     
-    public function get_conteo_por_estado(): array {
-        $sql = "select estado, count(*) as total from historias group by estado";
-        $result = $this->historias_db->query($sql);
-        
-        $conteos = [];
-        while ($row = $result->fetch_assoc()) {
-            $conteos[] = $row;
-        }
-        return $conteos;
+     public function get_conteo_por_estado(): array 
+    {
+        $sql = "SELECT estado, COUNT(*) AS total FROM historias GROUP BY estado";
+        return $this->historias_db->query_select($sql); 
     }
 
-    public function get_conteo_por_responsable_y_estado(): array {
-        $sql = "select responsable, estado, count(*) as total from historias group by responsable, estado order by responsable asc";
-        $result = $this->historias_db->query($sql);
-        
-        $conteos = [];
-        while ($row = $result->fetch_assoc()) {
-            $conteos[] = $row;
-        }
-        return $conteos;
+    public function get_conteo_por_responsable_y_estado(): array 
+    {
+        $sql = "SELECT responsable, estado, COUNT(*) AS total FROM historias GROUP BY responsable, estado ORDER BY responsable ASC";
+        return $this->historias_db->query_select($sql);
     }
 }
 ?>
