@@ -103,6 +103,12 @@ if (empty($sprint)) {
         echo '<p>Error al guardar los datos del usuario!!!</p>';
     }
     ?>
+    <header>
+        <ul>
+            <li><a href="inicio.php">Sprints</a></li>
+            <li><a href="informes.php">Informes</a></li>
+        </ul>
+    </header>
     <nav>
         <ul>
             <?php
