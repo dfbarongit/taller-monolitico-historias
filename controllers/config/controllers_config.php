@@ -5,6 +5,8 @@ use app\controllers\historias\HistoriasControllerInterface;
 use app\controllers\historias\HistoriasController;
 use app\controllers\sprints\SprintsControllerInterface;
 use app\controllers\sprints\SprintsController;
+use app\controllers\informes\InformesControllerInterface;
+use app\controllers\informes\InformesController;
 
 class ControllersConfig
 {
@@ -16,6 +18,10 @@ class ControllersConfig
     public static function get_sprints_controller(): SprintsControllerInterface
     {
         return new SprintsController(ModelsConfig::get_sprints_repository());
+    }
+    public static function get_informes_controller(): InformesControllerInterface
+    {
+        return new InformesController(ModelsConfig::get_informes_repository());
     }
 }
 ?>

@@ -2,7 +2,8 @@
 namespace app\models\database;
 use mysqli;
 
-class HistoriasDB implements HistoriasDBInterface{
+class HistoriasDB implements HistoriasDBInterface
+{
     private string $host_db = "localhost";
     private string $user_db = "root";
     private string $pwd_db = "";
@@ -28,7 +29,7 @@ class HistoriasDB implements HistoriasDBInterface{
         while ($row = $result->fetch_assoc()) {
             array_push($rows, $row);
         }
-        $this->conex->close();
+        //$this->conex->close();
         return $rows;
     }
 
@@ -36,8 +37,15 @@ class HistoriasDB implements HistoriasDBInterface{
     {
         echo $sql;
         $result = $this->conex->query($sql);
-        $this->conex->close();
+        //$this->conex->close();
         return $result;
     }
+    //cuando se hace una consulta, antes se cerraba la conexion y no podia volver a utilizar el controlador
+    //ahora con destruct se cierra la conexion al final cuando ya no se necesita
+    public function __destruct()
+    {
+        if ($this->conex) {
+            $this->conex->close();
+        }
+    }
 }
-?>

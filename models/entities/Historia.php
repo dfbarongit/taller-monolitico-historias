@@ -23,11 +23,11 @@ class Historia
         string $responsable,
         string $estado,
         int $puntos,
-        DateTime $fecha_creacion,
-        DateTime $fecha_finalizacion = null,
+        string $fecha_creacion,
+        string $fecha_finalizacion = null,
         int $sprint_id,
-        DateTime $created_at,
-        DateTime $updated_at
+        string $created_at = null,
+        string $updated_at = null
     ) {
         $this->id = $id;
         $this->titulo = $titulo;
@@ -35,11 +35,11 @@ class Historia
         $this->responsable = $responsable;
         $this->estado = $estado;
         $this->puntos = $puntos;
-        $this->fecha_creacion = $fecha_creacion;
-        $this->fecha_finalizacion = $fecha_finalizacion;
+        $this->fecha_creacion = new DateTime($fecha_creacion);
+        $this->fecha_finalizacion = new DateTime($fecha_finalizacion);
         $this->sprint_id = $sprint_id;
-        $this->created_at = $created_at;
-        $this->updated_at = $updated_at;
+        $this->created_at = new DateTime($created_at);
+        $this->updated_at = new DateTime($updated_at);
     }
 
     public function getId(): int
@@ -74,13 +74,13 @@ class Historia
 
     public function getFechaCreacion(): string
     {
-        return $this->fecha_creacion->format('Y-M-D');
+        return $this->fecha_creacion->format('Y-m-d');
     }
 
     public function getFechaFinalizacion(): string
     {
         if (!empty($this->fecha_finalizacion)) {
-            return $this->fecha_finalizacion->format('Y-M-D');
+            return $this->fecha_finalizacion->format('Y-m-d');
         } else {
             return "Sin fecha de fin";
         }
@@ -91,12 +91,12 @@ class Historia
         return $this->sprint_id;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTime|null
     {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTime|null
     {
         return $this->updated_at;
     }

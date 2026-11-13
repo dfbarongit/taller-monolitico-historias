@@ -20,7 +20,7 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         $historias_db = $this->historias_db->query_select($sql);
     
         return array_map(
-            fn($row): Historia => HistoriaMapper::map($row),
+            fn($row): Historia => HistoriaMapper::to_entity($row),
             $historias_db
         );
     }
@@ -33,12 +33,24 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         $sql .= "'" . $historia->getResponsable() . "', ";
         $sql .= "'" . $historia->getEstado() . "', ";
         $sql .= $historia->getPuntos() . ", ";
-        $sql .= "'" . $historia->getFechaCreacion()->format('Y-m-d H:i:s') . "', ";
-        $sql .= $historia->getFechaFinalizacion() ? "'" . $historia->getFechaFinalizacion()->format('Y-m-d H:i:s') . "', " : "NULL, ";
+        $sql .= "'" . $historia->getFechaCreacion() . "', ";
+        $sql .= $historia->getFechaFinalizacion() ? "'" . $historia->getFechaFinalizacion() . "', " : "NULL, ";
         $sql .= $historia->getSprintId() ?: "NULL";
         $sql .= ")";
         
         return $this->historias_db->query($sql);
+    }
+    public function get_historia(int $id): Historia 
+    {
+        $sql = "SELECT id, titulo, descripcion, responsable, estado, puntos, fecha_creacion, fecha_finalizacion, sprint_id ";
+        $sql .= "FROM historias WHERE id=" . $id;
+        $historias_db = $this->historias_db->query_select($sql);
+        
+        if (count($historias_db) === 0) {
+            throw new \Exception("Historia no encontrada", 2);
+        }
+        
+        return HistoriaMapper::to_entity($historias_db[0]);
     }
 
     public function update_historia(Historia $historia): bool 
@@ -49,10 +61,10 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         $sql .= "responsable='" . $historia->getResponsable() . "', ";
         $sql .= "estado='" . $historia->getEstado() . "', ";
         $sql .= "puntos=" . $historia->getPuntos() . ", ";
-        $sql .= "fecha_creacion='" . $historia->getFechaCreacion()->format('Y-m-d H:i:s') . "', ";
+        $sql .= "fecha_creacion='" . $historia->getFechaCreacion() . "', ";
         
         if ($historia->getFechaFinalizacion() !== null) {
-            $sql .= "fecha_finalizacion='" . $historia->getFechaFinalizacion()->format('Y-m-d H:i:s') . "', ";
+            $sql .= "fecha_finalizacion='" . $historia->getFechaFinalizacion() . "', ";
         } else {
             $sql .= "fecha_finalizacion=NULL, ";
         }
@@ -75,7 +87,7 @@ class HistoriasRepository implements HistoriasRepositoryInterface
         $historias_db = $this->historias_db->query_select($sql);
         
         return array_map(
-            fn($row): Historia => HistoriaMapper::map($row),
+            fn($row): Historia => HistoriaMapper::to_entity($row),
             $historias_db
         );
     }
