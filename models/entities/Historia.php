@@ -24,7 +24,7 @@ class Historia
         string $estado,
         int $puntos,
         DateTime $fecha_creacion,
-        DateTime $fecha_finalizacion = null,
+        ?DateTime $fecha_finalizacion = null,
         int $sprint_id,
         DateTime $created_at,
         DateTime $updated_at
@@ -74,16 +74,26 @@ class Historia
 
     public function getFechaCreacion(): string
     {
-        return $this->fecha_creacion->format('Y-M-D');
+        return $this->fecha_creacion->format('Y-m-d');
     }
 
     public function getFechaFinalizacion(): string
     {
         if (!empty($this->fecha_finalizacion)) {
-            return $this->fecha_finalizacion->format('Y-M-D');
+            return $this->fecha_finalizacion->format('Y-m-d');
         } else {
             return "Sin fecha de fin";
         }
+    }
+
+    public function getFechaCreacionDateTime(): DateTime
+    {
+        return $this->fecha_creacion;
+    }
+
+    public function getFechaFinalizacionDateTime(): ?DateTime
+    {
+        return $this->fecha_finalizacion;
     }
 
     public function getSprintId(): int

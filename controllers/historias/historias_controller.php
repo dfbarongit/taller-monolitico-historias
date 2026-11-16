@@ -17,6 +17,10 @@ class HistoriasController implements HistoriasControllerInterface {
         return $this->historia_model->get_historias();
     }
 
+    public function get_historia(int $id): ?Historia {
+        return $this->historia_model->get_historia_by_id($id);
+    }
+
     public function save_history(array $request): bool {
         $historia = HistoriaMapperController::to_entity($request);
         return $this->historia_model->save_new_history($historia);
@@ -36,12 +40,12 @@ class HistoriasController implements HistoriasControllerInterface {
         return $this->historia_model->get_historias_by_sprint($sprintId);
     }
 
-    public function get_conteo_por_estado(): array {
-        return $this->historia_model->get_conteo_por_estado();
+    public function get_conteo_por_estado(?int $sprintId = null): array {
+        return $this->historia_model->get_conteo_por_estado($sprintId);
     }
 
-    public function get_conteo_por_responsable_y_estado(): array {
-        return $this->historia_model->get_conteo_por_responsable_y_estado();
+    public function get_conteo_por_responsable_y_estado(?int $sprintId = null): array {
+        return $this->historia_model->get_conteo_por_responsable_y_estado($sprintId);
     }
 }
 ?>
