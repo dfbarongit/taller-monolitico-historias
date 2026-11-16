@@ -11,7 +11,7 @@ class Historia
     private string $estado;
     private int $puntos;
     private DateTime $fecha_creacion;
-    private DateTime|null $fecha_finalizacion;
+    private ?DateTime $fecha_finalizacion;
     private int $sprint_id;
     private DateTime $created_at;
     private DateTime $updated_at;
@@ -23,11 +23,11 @@ class Historia
         string $responsable,
         string $estado,
         int $puntos,
-        string $fecha_creacion,
-        string $fecha_finalizacion = null,
+        DateTime|string $fecha_creacion,
+        DateTime|string|null $fecha_finalizacion,
         int $sprint_id,
-        string $created_at = null,
-        string $updated_at = null
+        DateTime|string|null $created_at = null,
+        DateTime|string|null $updated_at = null
     ) {
         $this->id = $id;
         $this->titulo = $titulo;
@@ -35,11 +35,19 @@ class Historia
         $this->responsable = $responsable;
         $this->estado = $estado;
         $this->puntos = $puntos;
-        $this->fecha_creacion = new DateTime($fecha_creacion);
-        $this->fecha_finalizacion = new DateTime($fecha_finalizacion);
+        $this->fecha_creacion = $fecha_creacion instanceof DateTime
+            ? $fecha_creacion
+            : new DateTime($fecha_creacion);
+        $this->fecha_finalizacion = $fecha_finalizacion === null
+            ? null
+            : ($fecha_finalizacion instanceof DateTime ? $fecha_finalizacion : new DateTime($fecha_finalizacion));
         $this->sprint_id = $sprint_id;
-        $this->created_at = new DateTime($created_at);
-        $this->updated_at = new DateTime($updated_at);
+        $this->created_at = $created_at instanceof DateTime
+            ? $created_at
+            : new DateTime($created_at ?? "now");
+        $this->updated_at = $updated_at instanceof DateTime
+            ? $updated_at
+            : new DateTime($updated_at ?? "now");
     }
 
     public function getId(): int
@@ -84,6 +92,16 @@ class Historia
         } else {
             return "Sin fecha de fin";
         }
+    }
+
+    public function getFechaCreacionDateTime(): DateTime
+    {
+        return $this->fecha_creacion;
+    }
+
+    public function getFechaFinalizacionDateTime(): ?DateTime
+    {
+        return $this->fecha_finalizacion;
     }
 
     public function getSprintId(): int
