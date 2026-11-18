@@ -1,166 +1,153 @@
 <?php
-require_once __DIR__ . "/../models/database/historias_db_interface.php";
-require_once __DIR__ . "/../models/database/historias_db.php";
-require_once __DIR__ . "/../models/entities/Sprint.php";
-require_once __DIR__ . "/../models/entities/Historia.php";
-require_once __DIR__ . "/../models/mappers/sprint_mappers.php";
-require_once __DIR__ . "/../models/mappers/historia_mappers.php";
-require_once __DIR__ . "/../models/repository/sprints_repository/sprints_repository_interface.php";
-require_once __DIR__ . "/../models/repository/sprints_repository/sprints_repository.php";
-require_once __DIR__ . "/../models/repository/historias_repository/historias_repository_interface.php";
-require_once __DIR__ . "/../models/repository/historias_repository/historias_repository.php";
-require_once __DIR__ . "/../models/config/models_config.php";
-require_once __DIR__ . "/../controllers/mappers/sprint_mappers_controller.php";
-require_once __DIR__ . "/../controllers/mappers/historia_mappers_controller.php";
-require_once __DIR__ . "/../controllers/sprints/sprints_controller_interface.php";
-require_once __DIR__ . "/../controllers/sprints/sprints_controller.php";
-require_once __DIR__ . "/../controllers/historias/historias_controller_interface.php";
-require_once __DIR__ . "/../controllers/historias/historias_controller.php";
-require_once __DIR__ . "/../controllers/config/controllers_config.php";
+require "../models/database/historias_db_interface.php";
+require "../models/database/historias_db.php";
+require "../models/entities/Sprint.php";
+require "../models/mappers/sprint_mappers.php";
+require "../models/repository/sprints_repository/sprints_repository_interface.php";
+require "../models/repository/sprints_repository/sprints_repository.php";
+require "../models/repository/informes_repository/informes_repository_interface.php";
+require "../models/repository/informes_repository/informes_repository.php";
+require "../models/config/models_config.php";
 
+require "../controllers/mappers/sprint_mappers_controller.php";
+require "../controllers/mappers/historia_mappers_controller.php";
+require "../controllers/sprints/sprints_controller_interface.php";
+require "../controllers/sprints/sprints_controller.php";
+require "../controllers/informes/informes_controller_interface.php";
+require "../controllers/informes/informes_controller.php";
+require "../controllers/config/controllers_config.php";
 use app\controllers\config\ControllersConfig;
 
-function e(string $value): string
-{
-    return htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-}
+$controllerSpr = ControllersConfig::get_sprints_controller();
+$sprints = $controllerSpr->get_sprints_all();
 
-$sprintsController = ControllersConfig::get_sprints_controller();
-$sprints = $sprintsController->get_sprints_all();
-$sprintSeleccionado = null;
-$conteoPorEstado = [];
-$conteoPorResponsable = [];
-
-if (!empty($sprints)) {
-    $sprintId = empty($_GET["idSprint"]) ? $sprints[0]->getId() : (int)$_GET["idSprint"];
-    foreach ($sprints as $sprint) {
-        if ($sprint->getId() === $sprintId) {
-            $sprintSeleccionado = $sprint;
-            break;
-        }
-    }
-    if ($sprintSeleccionado === null) {
-        $sprintSeleccionado = $sprints[0];
-    }
-
-    $historiasController = ControllersConfig::get_historias_controller();
-    $conteoPorEstado = $historiasController->get_conteo_por_estado($sprintSeleccionado->getId());
-    $conteoPorResponsable = $historiasController->get_conteo_por_responsable_y_estado($sprintSeleccionado->getId());
-}
-
-$estados = ["nueva", "activa", "finalizada", "impedimento"];
-$totales = array_fill_keys($estados, 0);
-foreach ($conteoPorEstado as $fila) {
-    if (isset($totales[$fila["estado"]])) {
-        $totales[$fila["estado"]] = (int)$fila["total"];
+$idSprintActual = (empty($_GET["id"])) ? -1 : $_GET["id"];
+$sprint = "";
+$controllerInf = ControllersConfig::get_informes_controller();
+$sprintSeleccionado = "";
+foreach ($sprints as $spr) {
+    if ($idSprintActual == $spr->getId()) {
+        $sprint = $spr;
+        break;
     }
 }
-$responsables = [];
-foreach ($conteoPorResponsable as $fila) {
-    $responsable = $fila["responsable"];
-    if (!isset($responsables[$responsable])) {
-        $responsables[$responsable] = array_fill_keys($estados, 0);
-    }
-    if (isset($responsables[$responsable][$fila["estado"]])) {
-        $responsables[$responsable][$fila["estado"]] = (int)$fila["total"];
-    }
+//si el id es -1, se muestran los informes globales, sino se muestran los informes del sprint seleccionado
+if ($idSprintActual == -1) {
+    $historiasPorEstado = $controllerInf->get_conteo_por_estado();
+    $historiasPorResponsable = $controllerInf->get_conteo_por_responsable();
+    $sprintSeleccionado = "Todos los sprints";
+} else {
+    $historiasPorEstado = $controllerInf->get_conteo_por_estado_por_sprint($idSprintActual);
+    $historiasPorResponsable = $controllerInf->get_conteo_por_responsable_por_sprint($idSprintActual);
+    $sprintSeleccionado = (array_search($sprint, $sprints) + 1) . ': ' . $sprint->getNombre();
 }
-$totalHistorias = array_sum($totales);
-$totalPendientes = $totales["nueva"] + $totales["activa"];
+
+
+
+
+/*if (empty($sprint)) {
+    header("Location: sprint_form.php?sinReg=1");
+}*/
+
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informes por sprint</title>
     <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
-    <main class="report-page">
-        <h1>Informes por sprint</h1>
-        <nav>
-            <a href="inicio.php">Volver al tablero</a>
-        </nav>
 
-        <?php if (empty($sprints)): ?>
-            <section class="report-card">
-                <p>No hay sprints para generar informes.</p>
-                <a class="button button--primary" href="sprint_form.php">Crear sprint</a>
+<body class="app-shell">
+    <header>
+        <div class="topbar">
+            <h1>Gestor de historias de usuario</h1>
+            <nav aria-label="Navegacion principal">
+                <ul>
+                    <li><a href="inicio.php">Sprints</a></li>
+                    <li><a class="active" href="informes.php">Informes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="report-layout">
+        <aside class="report-nav">
+            <nav aria-label="Filtros de informes">
+                <ul>
+                    <li><a class="<?php echo $idSprintActual == -1 ? 'active' : ''; ?>" href="informes.php">Global (Todos los sprints)</a></li>
+                    <?php foreach ($sprints as $spr) { ?>
+                        <li>
+                            <a class="<?php echo $idSprintActual == $spr->getId() ? 'active' : ''; ?>"
+                               href="informes.php?id=<?php echo $spr->getId(); ?>">
+                                Informe del Sprint <?php echo array_search($spr, $sprints) + 1; ?>: <?php echo htmlspecialchars($spr->getNombre()); ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <?php if (!empty($_GET['error'])) { ?>
+                <p class="error-message">Error al guardar los datos del usuario.</p>
+            <?php } ?>
+
+            <section class="page-heading">
+                <h2>Informes de <?php echo htmlspecialchars($sprintSeleccionado); ?></h2>
             </section>
-        <?php else: ?>
-            <form class="report-filter" method="get" action="informes.php">
-                <label for="idSprint">Seleccionar sprint
-                    <select id="idSprint" name="idSprint">
-                        <?php foreach ($sprints as $sprint): ?>
-                            <option value="<?php echo $sprint->getId(); ?>" <?php echo $sprint->getId() === $sprintSeleccionado->getId() ? "selected" : ""; ?>>
-                                <?php echo e($sprint->getNombre()); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </label>
-                <button class="button button--primary" type="submit">Ver informe</button>
-            </form>
 
-            <section class="report-card">
-                <h2><?php echo e($sprintSeleccionado->getNombre()); ?>: resumen general</h2>
-                <div class="report-table-wrap">
+            <div class="report-grid">
+                <section class="report-section">
+                    <h2>Historias por estado</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Total de historias</th>
-                                <th>Finalizadas</th>
-                                <th>Pendientes (nuevas + activas)</th>
-                                <th>Con impedimento</th>
+                                <th>Estado</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?php echo $totalHistorias; ?></td>
-                                <td><?php echo $totales["finalizada"]; ?></td>
-                                <td><?php echo $totalPendientes; ?></td>
-                                <td><?php echo $totales["impedimento"]; ?></td>
-                            </tr>
+                            <?php foreach ($historiasPorEstado as $item) { ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($item["estado"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["total"]); ?></td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
-                </div>
+                </section>
 
-                <h2>Detalle por responsable</h2>
-                <?php if (empty($responsables)): ?>
-                    <p>Este sprint todavía no tiene historias.</p>
-                <?php else: ?>
-                    <div class="report-table-wrap">
-                        <table>
-                            <thead>
+                <section class="report-section">
+                    <h2>Historias por responsable</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Responsable</th>
+                                <th>Total</th>
+                                <th>Nuevas</th>
+                                <th>Activas</th>
+                                <th>Finalizadas</th>
+                                <th>Impedimentos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($historiasPorResponsable as $item) { ?>
                                 <tr>
-                                    <th>Responsable</th>
-                                    <th>Nuevas</th>
-                                    <th>Activas</th>
-                                    <th>Finalizadas</th>
-                                    <th>Con impedimento</th>
-                                    <th>Pendientes</th>
-                                    <th>Total</th>
+                                    <td><?php echo htmlspecialchars($item["responsable"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["total"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["nuevas"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["activas"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["finalizadas"]); ?></td>
+                                    <td><?php echo htmlspecialchars($item["impedimentos"]); ?></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($responsables as $responsable => $conteos): ?>
-                                    <?php $pendientesResponsable = $conteos["nueva"] + $conteos["activa"]; ?>
-                                    <tr>
-                                        <td><?php echo e((string)$responsable); ?></td>
-                                        <td><?php echo $conteos["nueva"]; ?></td>
-                                        <td><?php echo $conteos["activa"]; ?></td>
-                                        <td><?php echo $conteos["finalizada"]; ?></td>
-                                        <td><?php echo $conteos["impedimento"]; ?></td>
-                                        <td><?php echo $pendientesResponsable; ?></td>
-                                        <td><?php echo array_sum($conteos); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </section>
-    <?php endif; ?>
-    </main>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+    </div>
 </body>
+
 </html>

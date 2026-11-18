@@ -38,39 +38,41 @@ if (!empty($id)) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo strip_tags($titulo); ?></title>
+    <title><?php echo htmlspecialchars(strip_tags($titulo)); ?></title>
     <link rel="stylesheet" href="assets/css/app.css">
 </head>
 
-<body>
-    <main class="form-page">
-        <section class="form-card">
-            <h1><?php echo $titulo; ?></h1>
-            <form class="form-grid" action="<?php echo htmlspecialchars($action, ENT_QUOTES, "UTF-8"); ?>" method="post">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars((string)$id, ENT_QUOTES, "UTF-8"); ?>">
-                <div class="form-field">
-                    <label for="nombre">Nombre del sprint</label>
-                    <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($nombreSpr, ENT_QUOTES, "UTF-8"); ?>" required>
-                </div>
-                <div class="form-field">
-                    <label for="fecha_inicio">Fecha de inicio</label>
-                    <input type="date" name="fecha_inicio" id="fecha_inicio" value="<?php echo htmlspecialchars($fechaIniSpr, ENT_QUOTES, "UTF-8"); ?>" required>
-                </div>
-                <div class="form-field">
-                    <label for="fecha_fin">Fecha de cierre</label>
-                    <input type="date" name="fecha_fin" id="fecha_fin" value="<?php echo htmlspecialchars($fechaFinSpr, ENT_QUOTES, "UTF-8"); ?>" required>
-                </div>
-                <div class="form-actions">
-                    <a class="secondary-link" href="inicio.php">Cancelar</a>
-                    <button class="button button--primary" type="submit"><?php echo htmlspecialchars($textBtn, ENT_QUOTES, "UTF-8"); ?></button>
-                </div>
-            </form>
-        </section>
+<body class="form-page">
+    <main class="form-card">
+    <h1><?php echo $titulo?></h1>
+    <form action="<?php echo $action?>" method="post">
+        <div>
+            <input type="text" name="id" id="" value="<?php echo $id?>" hidden>
+        </div>
+        <div class="form-group">
+            <label for="">Nombre del sprint</label>
+            <input type="text" name="nombre" id="" value="<?php echo $nombreSpr?>">
+        </div>
+        <div class="form-row">
+        <div class="form-group">
+            <label for="">Fecha de inicio</label>
+            <input type="date" name="fecha_inicio" id="" value="<?php echo $fechaIniSpr?>">
+        </div>
+        <div class="form-group">
+            <label for="">Fecha de cierre</label>
+            <input type="date" name="fecha_fin" id="" value="<?php echo $fechaFinSpr?>">
+        </div>
+        </div>
+        <div class="form-actions">
+            <a href="inicio.php">Cancelar</a>
+            <button type="submit"><?php echo $textBtn?></button>
+        </div>
+    </form>
     </main>
 </body>
 
