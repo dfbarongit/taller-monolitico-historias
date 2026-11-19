@@ -24,7 +24,7 @@ $controllerSpr = ControllersConfig::get_sprints_controller();
 $sprints = $controllerSpr->get_sprints_all();
 
 if (empty($sprints)){
-    header("Location: sprint_form.php");
+    header("Location: sprint_form.php?sinReg=1");
 }
 
 $idSprintActual = (empty($_GET["id"])) ? $sprints[0]->getId() : $_GET["id"];
