@@ -19,7 +19,6 @@ use app\controllers\config\ControllersConfig;
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../inicio.php");
-    exit;
 }
 
 $sprintId = (int)($_POST["sprint_id"] ?? 0);
@@ -27,13 +26,10 @@ try {
     $saved = ControllersConfig::get_historias_controller()->save_history($_POST);
 } catch (\InvalidArgumentException $exception) {
     header("Location: ../../historia_form.php?idSprint=" . $sprintId . "&error=1");
-    exit;
 }
 
 if (!$saved) {
     header("Location: ../../historia_form.php?idSprint=" . $sprintId . "&error=1");
-    exit;
 }
 
 header("Location: ../../inicio.php?id=" . $sprintId);
-exit;

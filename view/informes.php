@@ -76,12 +76,14 @@ if ($idSprintActual == -1) {
         <aside class="report-nav">
             <nav aria-label="Filtros de informes">
                 <ul>
-                    <li><a class="<?php echo $idSprintActual == -1 ? 'active' : ''; ?>" href="informes.php">Global (Todos los sprints)</a></li>
+                    <li><a class="<?php echo $idSprintActual == -1 ? 'active' : ''; ?>" href="informes.php">Global
+                            (Todos los sprints)</a></li>
                     <?php foreach ($sprints as $spr) { ?>
                         <li>
                             <a class="<?php echo $idSprintActual == $spr->getId() ? 'active' : ''; ?>"
-                               href="informes.php?id=<?php echo $spr->getId(); ?>">
-                                Informe del Sprint <?php echo array_search($spr, $sprints) + 1; ?>: <?php echo htmlspecialchars($spr->getNombre()); ?>
+                                href="informes.php?id=<?php echo $spr->getId(); ?>">
+                                Informe del Sprint <?php echo array_search($spr, $sprints) + 1; ?>:
+                                <?php echo htmlspecialchars($spr->getNombre()); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -110,7 +112,7 @@ if ($idSprintActual == -1) {
                         <tbody>
                             <?php foreach ($historiasPorEstado as $item) { ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($item["estado"]); ?></td>
+                                    <td><?php echo htmlspecialchars(ucfirst($item["estado"])); ?></td>
                                     <td><?php echo htmlspecialchars($item["total"]); ?></td>
                                 </tr>
                             <?php } ?>
@@ -139,7 +141,11 @@ if ($idSprintActual == -1) {
                                     <td><?php echo htmlspecialchars($item["nuevas"]); ?></td>
                                     <td><?php echo htmlspecialchars($item["activas"]); ?></td>
                                     <td><?php echo htmlspecialchars($item["finalizadas"]); ?></td>
-                                    <td><?php echo htmlspecialchars($item["impedimentos"]); ?></td>
+                                    <td>
+                                        <span <?php echo $item["impedimentos"] > 0 ? 'class="impedimento"' : ''; ?>>
+                                            <?php echo htmlspecialchars($item["impedimentos"]); ?>
+                                        </span>
+                                    </td>
                                 </tr>
                             <?php } ?>
                         </tbody>

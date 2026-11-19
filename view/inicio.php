@@ -85,7 +85,13 @@ if (empty($sprint)) {
             <?php } ?>
 
             <section class="sprint-header">
-                <h2><?php echo htmlspecialchars($sprint->getNombre()); ?></h2>
+                <div class="sprint-header-title">
+                    <h2><?php echo htmlspecialchars($sprint->getNombre()); ?></h2>
+                    <div>
+                        <span class="story-info">Fecha inicio: <strong><?php echo htmlspecialchars($sprint->getFechaInicio()); ?></strong></span>
+                        <span class="story-info">Fecha fin: <strong><?php echo htmlspecialchars($sprint->getFechaFin()); ?></strong></span>
+                    </div>
+                </div>
                 <div class="actions">
                     <a href="sprint_form.php?id=<?php echo $idSprintActual; ?>">Modificar sprint</a>
                     <a class="danger-link" href="operaciones/sprint/eliminar_sprint.php?id=<?php echo $idSprintActual; ?>">Eliminar sprint</a>
@@ -103,12 +109,15 @@ if (empty($sprint)) {
                         <h3><?php echo htmlspecialchars($historia->getTitulo()); ?></h3>
                         <p><?php echo htmlspecialchars($historia->getDescripcion()); ?></p>
                         <div class="story-meta">
-                            <span>Estado: <strong><?php echo htmlspecialchars($historia->getEstado()); ?></strong></span>
-                            <span>Puntos: <strong><?php echo htmlspecialchars($historia->getPuntos()); ?></strong></span>
-                            <span>Inicio: <strong><?php echo htmlspecialchars($historia->getFechaCreacion()); ?></strong></span>
-                            <span>Cierre: <strong><?php echo htmlspecialchars($historia->getFechaFinalizacion()); ?></strong></span>
+                            <span class="story-info">
+                                Estado: <strong class="<?php echo $historia->getEstado() == 'impedimento' ? 'impedimento' : '' ?>"><?php echo htmlspecialchars(ucfirst($historia->getEstado())); ?></strong>
+                            </span>
+                            <span class="story-info">Puntos: <strong><?php echo htmlspecialchars($historia->getPuntos()); ?></strong></span>
+                            <span class="story-info">Inicio: <strong><?php echo htmlspecialchars($historia->getFechaCreacion()); ?></strong></span>
+                            <span class="story-info">Cierre: <strong><?php echo htmlspecialchars($historia->getFechaFinalizacion()); ?></strong></span>
                         </div>
                         <a class="button" href="historia_form.php?idSprint=<?php echo $idSprintActual; ?>&amp;id=<?php echo $historia->getId(); ?>">Modificar historia</a>
+                        <a class="button danger-link" href="operaciones/historia/eliminar_historia.php?idSprint=<?php echo $idSprintActual; ?>&amp;id=<?php echo $historia->getId(); ?>">Eliminar historia</a>
                     </article>
                 <?php } ?>
             </section>

@@ -19,27 +19,22 @@ use app\controllers\config\ControllersConfig;
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../inicio.php");
-    exit;
 }
 
 $id = filter_var($_POST["id"] ?? null, FILTER_VALIDATE_INT);
 $sprintId = filter_var($_POST["sprint_id"] ?? null, FILTER_VALIDATE_INT);
 if ($id === false || $id < 1 || $sprintId === false || $sprintId < 1) {
     header("Location: ../../inicio.php?error=1");
-    exit;
 }
 
 try {
     $updated = ControllersConfig::get_historias_controller()->update_historia($_POST);
 } catch (\InvalidArgumentException $exception) {
     header("Location: ../../historia_form.php?id=" . $id . "&idSprint=" . $sprintId . "&error=1");
-    exit;
 }
 
 if (!$updated) {
     header("Location: ../../historia_form.php?id=" . $id . "&idSprint=" . $sprintId . "&error=1");
-    exit;
 }
 
 header("Location: ../../inicio.php?id=" . $sprintId);
-exit;

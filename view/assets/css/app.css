@@ -8,6 +8,7 @@
     --border: #dbe3ee;
     --success: #16a34a;
     --danger: #dc2626;
+    --danger-background: #fdecef;
     --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
@@ -151,13 +152,17 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
     margin-bottom: 20px;
     padding: 18px 20px;
 }
+.sprint-header-title {
+    display: flex;
+    flex-direction: column;
+}
 
-.sprint-header h2 {
-    margin: 0;
+.sprint-header-title div {
+    display: flex;
+    gap: 12px;
 }
 
 .actions,
@@ -241,8 +246,8 @@ button:hover {
 
 .story-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .story-card {
@@ -250,6 +255,7 @@ button:hover {
     grid-template-rows: auto minmax(44px, 1fr) auto auto;
     gap: 10px;
     min-height: 220px;
+    min-width: 250px;
     padding: 18px;
     border: 1px solid var(--border);
     border-left: 4px solid var(--primary);
@@ -289,7 +295,12 @@ button:hover {
     font-size: 0.88rem;
 }
 
-.story-meta strong {
+.story-info {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.story-info strong {
     color: var(--text);
 }
 
@@ -357,6 +368,11 @@ textarea {
     color: var(--text);
     font: inherit;
     transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    resize: none;
+}
+
+textarea {
+    min-height: 88px;
 }
 
 input:focus,
@@ -426,6 +442,17 @@ textarea:focus {
     font-size: 1.05rem;
 }
 
+.impedimento {
+
+  background-color: var(--danger-background);    
+  color: var(--danger);               
+  
+
+  padding: 4px 12px;            
+  border-radius: 6px;           
+  border: 1px solid #f7d4dc;    
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -435,7 +462,13 @@ th,
 td {
     padding: 13px 14px;
     border-bottom: 1px solid var(--border);
-    text-align: left;
+    text-align: center;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+  font-weight: bold;
 }
 
 thead {

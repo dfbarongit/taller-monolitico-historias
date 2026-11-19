@@ -69,7 +69,7 @@ if (!empty($id)) {
         </div>
         <div class="form-group">
             <label for="">Descripción de la historia</label>
-            <input type="text" name="descripcion" value="<?php echo $descripcionHis ?>" required>
+            <textarea type="text" name="descripcion" required><?php echo $descripcionHis ?></textarea>
         </div>
         <div class="form-group">
             <label for="">Responsable</label>
