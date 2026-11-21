@@ -115,6 +115,7 @@ if (empty($sprint)) {
                             <span class="story-info">Puntos: <strong><?php echo htmlspecialchars($historia->getPuntos()); ?></strong></span>
                             <span class="story-info">Inicio: <strong><?php echo htmlspecialchars($historia->getFechaCreacion()); ?></strong></span>
                             <span class="story-info">Cierre: <strong><?php echo htmlspecialchars($historia->getFechaFinalizacion()); ?></strong></span>
+                            <span class="story-info">Responsable: <strong><?php echo htmlspecialchars($historia->getResponsable()); ?></strong></span>
                         </div>
                         <a class="button" href="historia_form.php?idSprint=<?php echo $idSprintActual; ?>&amp;id=<?php echo $historia->getId(); ?>">Modificar historia</a>
                         <a class="button danger-link" href="operaciones/historia/eliminar_historia.php?idSprint=<?php echo $idSprintActual; ?>&amp;id=<?php echo $historia->getId(); ?>">Eliminar historia</a>
