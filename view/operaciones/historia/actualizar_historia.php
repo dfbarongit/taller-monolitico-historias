@@ -20,6 +20,16 @@ use app\controllers\config\ControllersConfig;
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../inicio.php");
 }
+//comprobar fechas, si la fecha de cierre es menor a la fecha de inicio, redirigir con error
+if (isset($_POST["fecha_finalizacion"]) && isset($_POST["fecha_creacion"])) {
+    $fechaFinalizacion = new DateTime($_POST["fecha_finalizacion"]);
+    $fechaCreacion = new DateTime($_POST["fecha_creacion"]);
+
+    if ($fechaFinalizacion < $fechaCreacion) {
+        header("Location: ../../historia_form.php?id=" . $id . "&idSprint=" . $sprintId . "&error=2");
+        exit;
+    }
+}
 
 $id = filter_var($_POST["id"] ?? null, FILTER_VALIDATE_INT);
 $sprintId = filter_var($_POST["sprint_id"] ?? null, FILTER_VALIDATE_INT);

@@ -15,6 +15,10 @@ use app\controllers\config\ControllersConfig;
 
 $id = (empty($_GET["id"])) ? "" : $_GET["id"];
 $titulo = "Crear un nuevo sprint";
+$error = (empty($_GET["error"])) ? "" : "Ocurrió un error al procesar la solicitud, ingrese los datos correctamente";
+if (!empty($_GET["error"]) && $_GET["error"] == 2) {
+    $error = "Ingrese una fecha de cierre mayor a la fecha de inicio";
+}
 $nombreSpr = "";
 $fechaIniSpr = "";
 $fechaFinSpr = "";
@@ -50,6 +54,7 @@ if (!empty($id)) {
 <body class="form-page">
     <main class="form-card">
     <h1><?php echo $titulo?></h1>
+    <h2><?php echo $error?></h2>
     <form action="<?php echo $action?>" method="post">
         <div>
             <input type="text" name="id" id="" value="<?php echo $id?>" hidden>

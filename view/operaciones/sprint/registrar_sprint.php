@@ -13,6 +13,17 @@ require "../../../controllers/sprints/sprints_controller.php";
 require "../../../controllers/config/controllers_config.php";
 use app\controllers\config\ControllersConfig;
 
+//comprobar fechas, si la fecha de cierre es menor a la fecha de inicio, redirigir con error
+if (isset($_POST["fecha_fin"]) && isset($_POST["fecha_inicio"])) {
+    $fechaFinalizacion = new DateTime($_POST["fecha_fin"]);
+    $fechaInicio = new DateTime($_POST["fecha_inicio"]);
+
+    if ($fechaFinalizacion < $fechaInicio) {
+        header("Location: ../../sprint_form.php?id=" . $id . "&idSprint=" . $sprintId . "&error=2");
+        exit;
+    }
+}
+
 $controller = ControllersConfig::get_sprints_controller();
 
 $sprint = $controller->save_sprint($_POST);
